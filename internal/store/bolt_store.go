@@ -36,6 +36,7 @@ func NewBoltStore(db bolt.DB, bucket string) (store, error) {
 	}, nil
 }
 
+// InsertURL puts the shortcode and URL into the store
 func (s boltStore) InsertURL(shortcode, url string) error {
 	s.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(s.bucket)
@@ -46,6 +47,7 @@ func (s boltStore) InsertURL(shortcode, url string) error {
 	return nil
 }
 
+// RetrieveURL returns the URL for a shortcode, or an error if not found
 func (s boltStore) RetrieveURL(shortcode string) (string, error) {
 	var value string
 
