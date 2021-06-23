@@ -2,18 +2,21 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
+	"net/url"
 	"os"
-	"strings"
 
 	"github.com/Sacro/urlshortner/internal/store"
 	"github.com/lithammer/shortuuid/v3"
 	bolt "go.etcd.io/bbolt"
 )
 
+const domain = `http://example.com`
+
 func main() {
-	if len(os.Args) != 2 {
-		log.Println("You must pass a single argument, either a URL (starting with http) or a short code")
+	if len(os.Args) != 3 {
+		log.Println("You must pass a two arguments, create/retrieve and the URL")
 		return
 	}
 
@@ -27,23 +30,34 @@ func main() {
 		log.Fatal("Unable to build store")
 	}
 
-	arg := os.Args[1]
+	action, key := os.Args[1], os.Args[2]
 
-	if strings.HasPrefix(arg, "http") {
-		// Is a URL
-		code := shortuuid.New()
-		err := s.InsertURL(code, arg)
+	switch action {
+	case "create":
+		u, err := url.Parse(key)
 		if err != nil {
+			log.Fatalf("Unable to parse URL: %s", u)
+		}
+
+		if u.Scheme != "http" && u.Scheme != "https" {
+			log.Fatalf("Not a valid URL: %s", u)
+		}
+
+		code := shortuuid.New()
+		key := fmt.Sprintf("%s/%s", domain, code)
+
+		if err := s.InsertURL(key, u.String()); err != nil {
 			log.Fatal("Unable to insert URL")
 		}
 
-		log.Printf("code: %s", code)
-	} else {
-		// Is not a URL
-		code, err := s.RetrieveURL(arg)
+		log.Printf("code: %s", key)
+		return
+
+	case "retrieve":
+		code, err := s.RetrieveURL(key)
 		if err != nil {
 			if errors.Is(err, store.ErrNotFound) {
-				log.Printf("code: %s not found", arg)
+				log.Printf("code: %s not found", key)
 				return
 			}
 
@@ -51,6 +65,9 @@ func main() {
 		}
 
 		log.Printf("url: %s", code)
-	}
+		return
 
+	default:
+		log.Fatalf("Unknown action: %s", action)
+	}
 }
