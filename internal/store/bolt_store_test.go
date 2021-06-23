@@ -12,7 +12,7 @@ const testfile = "test.db"
 
 type BoltStoreTestSuite struct {
 	suite.Suite
-	db    bbolt.DB
+	db    *bbolt.DB
 	store store
 }
 
@@ -23,9 +23,9 @@ func (suite *BoltStoreTestSuite) SetupTest() {
 		suite.FailNow("Unable to open database")
 	}
 
-	suite.db = *db
+	suite.db = db
 
-	store, err := NewBoltStore(*db, "test")
+	store, err := NewBoltStore(db, "test")
 	if err != nil {
 		suite.FailNow("Unable to create store")
 	}

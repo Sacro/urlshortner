@@ -7,8 +7,9 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+// boltStore is an implementation of the store interface backed by bbolt
 type boltStore struct {
-	db     bolt.DB
+	db     *bolt.DB
 	bucket []byte
 }
 
@@ -16,7 +17,7 @@ type boltStore struct {
 var ErrNotFound = errors.New("not found")
 
 // NewBoltStore returns a new store backed by a BoltDB file for persistence
-func NewBoltStore(db bolt.DB, bucket string) (store, error) {
+func NewBoltStore(db *bolt.DB, bucket string) (store, error) {
 	// Ensure we don't have a blank bucket name
 	if strings.TrimSpace(bucket) == "" {
 		bucket = "bucket"
@@ -38,13 +39,11 @@ func NewBoltStore(db bolt.DB, bucket string) (store, error) {
 
 // InsertURL puts the shortcode and URL into the store
 func (s boltStore) InsertURL(shortcode, url string) error {
-	s.db.Update(func(tx *bolt.Tx) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(s.bucket)
 		err := b.Put([]byte(shortcode), []byte(url))
 		return err
 	})
-
-	return nil
 }
 
 // RetrieveURL returns the URL for a shortcode, or an error if not found

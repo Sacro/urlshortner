@@ -22,7 +22,7 @@ func main() {
 		log.Fatal("Unable to create database")
 	}
 
-	s, err := store.NewBoltStore(*db, "bucket")
+	s, err := store.NewBoltStore(db, "bucket")
 	if err != nil {
 		log.Fatal("Unable to build store")
 	}
@@ -32,7 +32,10 @@ func main() {
 	if strings.HasPrefix(arg, "http") {
 		// Is a URL
 		code := shortuuid.New()
-		s.InsertURL(code, arg)
+		err := s.InsertURL(code, arg)
+		if err != nil {
+			log.Fatal("Unable to insert URL")
+		}
 
 		log.Printf("code: %s", code)
 	} else {
