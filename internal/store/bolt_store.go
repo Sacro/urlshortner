@@ -17,7 +17,7 @@ type boltStore struct {
 var ErrNotFound = errors.New("not found")
 
 // NewBoltStore returns a new store backed by a BoltDB file for persistence
-func NewBoltStore(db *bolt.DB, bucket string) (store, error) {
+func NewBoltStore(db *bolt.DB, bucket string) (Store, error) {
 	// Ensure we don't have a blank bucket name
 	if strings.TrimSpace(bucket) == "" {
 		bucket = "bucket"

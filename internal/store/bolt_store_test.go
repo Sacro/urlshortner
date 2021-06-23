@@ -13,7 +13,7 @@ const testfile = "test.db"
 type BoltStoreTestSuite struct {
 	suite.Suite
 	db    *bbolt.DB
-	store store
+	store Store
 }
 
 // SetupTest creates the DB and sets up the store

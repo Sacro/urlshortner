@@ -1,7 +1,7 @@
 package store
 
-// store is a generic interface for inserting/retrieving shortcodes/urls
-type store interface {
+// Store is a generic interface for inserting/retrieving shortcodes/urls
+type Store interface {
 	// InsertURL puts the shortcode and URL into the store
 	InsertURL(shortcode, url string) error
 
