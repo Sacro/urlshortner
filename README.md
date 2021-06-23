@@ -5,7 +5,7 @@
 To store a URL:
 
 ```bash
-go run main.go create http://www.example.com
+go run ./cmd/cli create http://www.example.com
 
 > 2021/06/23 20:06:03 code: 4oAs25oz6pvcHwySaMvojR
 ```
@@ -13,7 +13,7 @@ go run main.go create http://www.example.com
 To retrieve a URL from a shortcode:
 
 ```bash
-go run main.go retrieve 4oAs25oz6pvcHwySaMvojR
+go run ./cmd/cli retrieve 4oAs25oz6pvcHwySaMvojR
 
 > 2021/06/23 20:09:43 url: http://www.google.com
 ```
