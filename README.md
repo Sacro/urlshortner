@@ -4,6 +4,12 @@
 
 ### API
 
+You can start the API by running
+
+```bash
+go run ./cmd/api
+```
+
 The API defaults to running on port 3000
 
 You can insert a URL by sending a POST request to `http://localhost:3000`, this should return a code.
