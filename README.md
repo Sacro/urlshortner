@@ -2,6 +2,16 @@
 
 ## Usage
 
+### API
+
+The API defaults to running on port 3000
+
+You can insert a URL by sending a POST request to `http://localhost:3000`, this should return a code.
+
+You can test the forwarding by browsing to `http://localhost:3000/CODE`
+
+### CLI
+
 To store a URL:
 
 ```bash
