@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/Sacro/urlshortner/internal/handlers"
+	"github.com/Sacro/urlshortner/internal/repository"
+	"github.com/Sacro/urlshortner/internal/router"
 	"github.com/Sacro/urlshortner/internal/store"
 	logger "github.com/chi-middleware/logrus-logger"
 	"github.com/go-chi/chi/v5"
@@ -25,13 +27,12 @@ func main() {
 		log.Fatal("Unable to build store")
 	}
 
-	repo := handlers.NewRepository(log, s, shortuuid.New)
+	repo := repository.NewRepository(log, s, shortuuid.New)
+	handlerRepo := handlers.NewHandlerRepository(repo)
 
 	r := chi.NewRouter()
 	r.Use(logger.Logger("router", log))
-
-	r.Post("/", repo.CreateHandler)
-	r.Get("/{key}", repo.RetrieveHandler)
+	r.Mount("/", router.NewRouter(handlerRepo))
 
 	logrus.Panic(http.ListenAndServe(":3000", r))
 }
